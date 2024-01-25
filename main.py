@@ -1,7 +1,7 @@
 import cv2
 #crear diseno de botones chidos
 
-# interfaz completa
+# interfaz de dos camaras y su boton de ajustes
 def list_cameras():
     cameras = []
     for i in range(cv2.CAP_DSHOW, cv2.CAP_DSHOW + 10):
