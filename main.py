@@ -1,4 +1,6 @@
 import cv2
+#crear diseno
+
 
 def list_cameras():
     cameras = []
