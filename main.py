@@ -1,5 +1,5 @@
 import cv2
-#crear diseno
+#crear diseno de botones
 
 # interfaz completa
 def list_cameras():
