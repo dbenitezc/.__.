@@ -1,7 +1,7 @@
 import cv2
 #crear diseno
 
-
+# interfaz completa
 def list_cameras():
     cameras = []
     for i in range(cv2.CAP_DSHOW, cv2.CAP_DSHOW + 10):
