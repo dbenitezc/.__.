@@ -80,17 +80,24 @@ def main(cameras_list):
     buttons_frame = tk.Frame(root)
     buttons_frame.pack(side=tk.TOP, pady=20)
 
+    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=lambda: print("Presionaste el botón Módulo de Reportes"), bg="#4CAF50", fg="white", font=("Helvetica", 14))
+    button_reports.pack(side=tk.LEFT, padx=20)
+
+    button_reports2 = tk.Label(buttons_frame ,text="         ", font=("Helvetica", 24))
+    button_reports2.pack(side=tk.LEFT, padx=0)
+
     for i, action in enumerate(button_actions):
         button = tk.Button(buttons_frame, text=f"Nivel {i+1}", command=action, bg="#4CAF50", fg="white", font=("Helvetica", 14))
         button.pack(side=tk.LEFT, padx=20)
 
     # Crear botones adicionales
-    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=lambda: print("Presionaste el botón Módulo de Reportes"), bg="#4CAF50", fg="white", font=("Helvetica", 14))
-    button_reports.pack(side=tk.LEFT, padx=20)
+    
     
 
     button_config = tk.Button(buttons_frame, text="Configuración", command=lambda: print("Presionaste el botón Configuración"), bg="#4CAF50", fg="white", font=("Helvetica", 14))
     button_config.pack(side=tk.RIGHT, padx=20)
+    button_reports2 = tk.Label(buttons_frame ,text="          ", font=("Helvetica", 24))
+    button_reports2.pack(side=tk.RIGHT, padx=20)
 
     # Crear frames internos para los videos
     camera_frame1 = tk.Canvas(frame, width=300, height=300, bg="gray")
