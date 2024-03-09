@@ -41,10 +41,6 @@ def open_config():
     save_button = tk.Button(config_window, text="Save Configuration", command=save_config)
     save_button.pack(side=tk.BOTTOM, padx=5, pady=10)
 
-def select_camera(index):
-    print(f"Selected camera: {cameras[index]}")
-
-
 def update_cameras(cameras_list, index):
     """Update the video frames with the new cameras."""
     global camera1, camera2, camera_frame1, camera_frame2

@@ -9,7 +9,7 @@ import cv2
 global cameras_list
 
 # Definimos las cámaras a utilizar
-camerasLevel = [(0, 1), (2, 3), (4, 5)]
+camerasLevel = [[0, 1], [2, 3], [4, 5]]
 config_path = Path('config.txt')
 
 nivel_actual = 1
