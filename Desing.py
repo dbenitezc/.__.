@@ -2,7 +2,7 @@
 # Importamos las librerías necesarias
 from pathlib import Path
 from PIL import Image as Pil_image, ImageTk as Pil_imageTk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import tkinter as tk
 import cv2
 
@@ -12,12 +12,17 @@ global cameras_list
 camerasLevel = [[0, 1], [2, 3], [4, 5]]
 config_path = Path('config.txt')
 
-nivel_actual = 1
+nivel_actual = 0
 
 def open_config():
     def save_config():
         # Logic to save the selected camera configuration
         print("Configuration saved")
+        for i in range(3):
+            if(combos_camera_config[i*2].current()==combos_camera_config[i*2+1].current()):
+                print("Error: Las cámaras no pueden ser iguales")
+                messagebox.showerror(message="Las cámaras de un mismo piso deben ser distintas", title="Error en la selección de cámaras")
+                return
         with open(config_path, 'w') as file:
             for i in range(3):
                 for j in range(2):
@@ -94,6 +99,7 @@ def main():
 
     # Crear la ventana principal
     root = tk.Tk()
+    root.minsize(1000, 600)
     root.geometry("1000x600")
     root.title("Interfaz de Video")
 
@@ -123,7 +129,7 @@ def main():
     frame.pack(padx=20, pady=20)
 
     # Agregar un label al frame
-    label = tk.Label(frame, text="Nivel "+ str(nivel_actual), font=("Helvetica", 24))
+    label = tk.Label(frame, text="Nivel "+ str(nivel_actual+1), font=("Helvetica", 24))
     label.pack()
 
     # Definir acciones para cada botón
@@ -182,6 +188,9 @@ def load_config():
     with open(config_path, 'r') as file:
         for i in range(3):
             level_config = file.readline().split(' ')
+            if int(level_config[0]) == int(level_config[1]):
+                messagebox.showwarning(message="Hubo un error en la carga de la configuración", title="Error cargando ")
+                return
             camerasLevel[i] = [int(level_config[0]), int(level_config[1])]
 
 if __name__ == '__main__':
