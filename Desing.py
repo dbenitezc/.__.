@@ -3,8 +3,10 @@
 from pathlib import Path
 from PIL import Image as Pil_image, ImageTk as Pil_imageTk
 from tkinter import ttk, messagebox
+from datetime import datetime
 import tkinter as tk
 import cv2
+import os
 
 global cameras_list
 
@@ -94,6 +96,23 @@ def update_video(cap, canvas):
         # Programar la próxima actualización después de un corto retraso
         root.after(50, update_video, cap, canvas)
 
+def report():
+    print("Presionaste el boton de reportes")
+    videoCams = [camera1, camera2]
+    folderName = datetime.now().strftime("%d-%m-%Y %H.%M")
+    folderPath = Path(f"{folderName} Nivel {nivel_actual+1}")
+    if not os.path.exists(folderPath):
+        os.makedirs(folderPath)
+    for i in range(2):
+        take_pic(videoCams[i], f"{folderPath}/screenShotCamera{i}.png")
+
+def take_pic(camera, path):
+    ret, frame = camera.read()
+    rgb_frame = frame[:, :, ::-1]
+    img = Pil_image.fromarray(rgb_frame)
+    img.save(path)
+    print("Photo captured successfully.")
+
 def main():
     global root, camera1, camera2, camera_frame1, camera_frame2
 
@@ -139,7 +158,7 @@ def main():
     buttons_frame = tk.Frame(root)
     buttons_frame.pack(side=tk.TOP, pady=20)
 
-    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=lambda: print("Presionaste el botón Módulo de Reportes"), bg="#4CAF50", fg="white", font=("Helvetica", 14))
+    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=report, bg="#4CAF50", fg="white", font=("Helvetica", 14))
     button_reports.pack(side=tk.LEFT, padx=20)
 
     button_reports2 = tk.Label(buttons_frame ,text="         ", font=("Helvetica", 24))
