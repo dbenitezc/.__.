@@ -1,2 +1,0 @@
-Facherito=papa
-print(Facherito)

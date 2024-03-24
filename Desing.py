@@ -2,11 +2,13 @@
 # Importamos las librerías necesarias
 from pathlib import Path
 from PIL import Image as Pil_image, ImageTk as Pil_imageTk
-from tkinter import ttk, messagebox
+from tkinter import Button, Label, PhotoImage, ttk, messagebox
 from datetime import datetime
 import tkinter as tk
 import cv2
 import os
+import ctypes
+from screeninfo import get_monitors
 
 global cameras_list
 
@@ -15,11 +17,59 @@ camerasLevel = [[0, 1], [2, 3], [4, 5]]
 config_path = Path('config.txt')
 
 nivel_actual = 0
+def inicio():
+    def cambio():
+        root.destroy()
+        main() 
+    root = tk.Tk()
+    root.overrideredirect(True)
+    imagen_fondo = tk.PhotoImage(file="xd.png")
 
+    # Establecer la imagen de fondo en la ventana
+    background_label = tk.Label(root, image=imagen_fondo)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    root.minsize(1000, 600)
+    background_label.config(bg='white')
+    wtotal = root.winfo_screenwidth()
+    htotal = root.winfo_screenheight()
+    wventana = 1000
+    hventana = 600
+    pwidth = round(wtotal/2-wventana/2)
+    pheight = round(htotal/2-hventana/2)
+    root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
+    
+   
+
+
+
+   
+    imagen_continuar = tk.PhotoImage(file="continuar.png")
+    imagen_continuar = imagen_continuar.subsample(13)  # Submuestrea la imagen por un factor de 15
+
+    # Botón "Continuar" con imagen redimensionada
+    button_continue = tk.Button(root, image=imagen_continuar, command=cambio, bg="white", bd=0)
+    button_continue.pack(side=tk.RIGHT, anchor='se', padx=20, pady=20)
+
+    
+
+
+    imagen_cerrar = tk.PhotoImage(file="cerrar.png")
+    imagen_cerrar = imagen_cerrar.subsample(19)
+
+    # Botón "Cerrar" con imagen
+    button_close = tk.Button(root, image=imagen_cerrar, command=root.destroy, bg="white", bd=0)
+    button_close.pack(side=tk.LEFT, anchor='ne',padx=20, pady=20)
+    
+   
+    
+    
+    root.mainloop()
+
+  
 def open_config():
     def save_config():
         # Logic to save the selected camera configuration
-        print("Configuration saved")
+        print("Configuration Guardada")
         for i in range(3):
             if(combos_camera_config[i*2].current()==combos_camera_config[i*2+1].current()):
                 print("Error: Las cámaras no pueden ser iguales")
@@ -35,9 +85,27 @@ def open_config():
         update_cameras(nivel_actual, '', tk.Label())
 
     config_window = tk.Toplevel(root)
-    config_window.title("Camera Configuration")
+    config_window.title("Configuracion")
+    config_window.overrideredirect(True)
+    
     config_window.grab_set()
     combos_camera_config = []
+
+    ###########################################
+    #  Obtenemos el largo y  ancho de la pantalla
+    wtotal = config_window.winfo_screenwidth()
+    htotal = config_window.winfo_screenheight()
+    #  Guardamos el largo y alto de la ventana
+    wventana = 400
+    hventana = 200
+
+    #  Aplicamos la siguiente formula para calcular donde debería posicionarse
+    pwidth = round(wtotal/2-wventana/2)
+    pheight = round(htotal/2-hventana/2)
+
+    #  Se lo aplicamos a la geometría de la ventana
+    config_window.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
+    ############################
 
     # Create a grid layout with 3 rows and 3 columns
     for i in range(3):
@@ -50,8 +118,8 @@ def open_config():
             combos_camera_config[-1].current(camerasLevel[i][j])
             combos_camera_config[-1].pack(side=tk.LEFT, padx=5, pady=10)
 
-    # Add a button for saving the configuration
-    save_button = tk.Button(config_window, text="Save Configuration", command=save_config)
+    # Add a button for saving the configurationxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    save_button = tk.Button(config_window, text="Guardar", command=save_config)
     save_button.pack(side=tk.BOTTOM, padx=5, pady=10)
 
 def update_cameras(index, button_text,label):
@@ -113,14 +181,29 @@ def take_pic(camera, path):
     img.save(path)
     print("Photo captured successfully.")
 
+
+
 def main():
     global root, camera1, camera2, camera_frame1, camera_frame2
 
-    # Crear la ventana principal
+    
     root = tk.Tk()
+    #root.overrideredirect(True)
+    #root.resizable(False,False)
     root.minsize(1000, 600)
-    root.geometry("1000x600")
-    root.title("Interfaz de Video")
+    bg_photo=PhotoImage(file='icono.png')
+    root.geometry('1000x600')
+    root.title("Webcam viewer")
+    wtotal = root.winfo_screenwidth()
+    htotal = root.winfo_screenheight()
+    wventana = 1000
+    hventana = 600
+    pwidth = round(wtotal/2-wventana/2)
+    pheight = round(htotal/2-hventana/2)
+    root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
+    icono = tk.PhotoImage(file="icono.png")
+    root.config(bg='white')
+    #root.iconphoto(True,icono)
 
     def on_window_config(event: tk.Event) -> None:
         """Actualizar tamaño de los frames de video y botones al cambiar el tamaño de la ventana."""
@@ -145,10 +228,11 @@ def main():
 
     # Crear un frame principal
     frame = tk.Frame(root)
+    frame.configure(background="#FFFFFF")
     frame.pack(padx=20, pady=20)
 
     # Agregar un label al frame
-    label = tk.Label(frame, text="Nivel "+ str(nivel_actual+1), font=("Helvetica", 24))
+    label = tk.Label(frame, text="Nivel "+ str(nivel_actual+1), font=("Arial", 24),bg="#FFFFFF")
     label.pack()
 
     # Definir acciones para cada botón
@@ -156,32 +240,33 @@ def main():
 
     # Agregar botones al frame
     buttons_frame = tk.Frame(root)
+    buttons_frame.configure(background="#ffffff")
     buttons_frame.pack(side=tk.TOP, pady=20)
 
-    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=report, bg="#4CAF50", fg="white", font=("Helvetica", 14))
+    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=report, bg="#969696", fg="black", font=("Arial", 14))
     button_reports.pack(side=tk.LEFT, padx=20)
 
-    button_reports2 = tk.Label(buttons_frame ,text="         ", font=("Helvetica", 24))
+    button_reports2 = tk.Label(buttons_frame ,text="         ",bg="#ffffff", font=("Helvetica", 24))
     button_reports2.pack(side=tk.LEFT, padx=0)
 
     for i, action in enumerate(button_actions):
-        button = tk.Button(buttons_frame, text=f"Nivel {i+1}", command=action, bg="#4CAF50", fg="white", font=("Helvetica", 14))
+        button = tk.Button(buttons_frame, text=f"Nivel {i+1}", command=action, bg="#969696", fg="black", font=("Arial", 14))
         button.pack(side=tk.LEFT, padx=20)
 
     # Crear botones adicionales
 
 
 
-    button_config = tk.Button(buttons_frame, text="Configuración", command=open_config, bg="#4CAF50", fg="white", font=("Helvetica", 14))
+    button_config = tk.Button(buttons_frame, text="Configuración", command=open_config, bg="#969696", fg="black", font=("Helvetica", 14))
     button_config.pack(side=tk.RIGHT, padx=20)
-    button_reports2 = tk.Label(buttons_frame ,text="          ", font=("Helvetica", 24))
+    button_reports2 = tk.Label(buttons_frame ,text="          ",bg="#ffffff", font=("Helvetica", 24))
     button_reports2.pack(side=tk.RIGHT, padx=20)
 
     # Crear frames internos para los videos
-    camera_frame1 = tk.Canvas(frame, width=300, height=300, bg="gray")
+    camera_frame1 = tk.Canvas(frame, width=300, height=300, bg="white")
     camera_frame1.pack(side=tk.LEFT, padx=(0, 10))
 
-    camera_frame2 = tk.Canvas(frame, width=300, height=300, bg="gray")
+    camera_frame2 = tk.Canvas(frame, width=300, height=300, bg="white")
     camera_frame2.pack(side=tk.LEFT, padx=(10, 0))
 
     camera1 = cv2.VideoCapture(cameras_list[camerasLevel[0][0]])
@@ -212,12 +297,13 @@ def load_config():
                 return
             camerasLevel[i] = [int(level_config[0]), int(level_config[1])]
 
-if __name__ == '__main__':
-    cameras_list = list_cameras()
-    if not cameras_list:
-        print("No se encontraron cámaras.")
-    load_config()
-    main()
+
+cameras_list = list_cameras()
+if not cameras_list:
+    print("No se encontraron cámaras.")
+load_config()
+inicio()
+
 
 
 
