@@ -23,6 +23,7 @@ def inicio():
         main() 
     root = tk.Tk()
     root.overrideredirect(True)
+    
     imagen_fondo = tk.PhotoImage(file="xd.png")
 
     # Establecer la imagen de fondo en la ventana
@@ -43,8 +44,8 @@ def inicio():
 
 
    
-    imagen_continuar = tk.PhotoImage(file="continuar.png")
-    imagen_continuar = imagen_continuar.subsample(13)  # Submuestrea la imagen por un factor de 15
+    imagen_continuar = tk.PhotoImage(file="Continue.png")
+    imagen_continuar = imagen_continuar.subsample(13)  # 13Submuestrea la imagen por un factor de 15
 
     # Botón "Continuar" con imagen redimensionada
     button_continue = tk.Button(root, image=imagen_continuar, command=cambio, bg="white", bd=0)
@@ -53,8 +54,8 @@ def inicio():
     
 
 
-    imagen_cerrar = tk.PhotoImage(file="cerrar.png")
-    imagen_cerrar = imagen_cerrar.subsample(19)
+    imagen_cerrar = tk.PhotoImage(file="Close.png")
+    imagen_cerrar = imagen_cerrar.subsample(17) #17
 
     # Botón "Cerrar" con imagen
     button_close = tk.Button(root, image=imagen_cerrar, command=root.destroy, bg="white", bd=0)
@@ -88,6 +89,7 @@ def open_config():
     config_window.title("Configuracion")
     config_window.overrideredirect(True)
     
+    
     config_window.grab_set()
     combos_camera_config = []
 
@@ -96,7 +98,7 @@ def open_config():
     wtotal = config_window.winfo_screenwidth()
     htotal = config_window.winfo_screenheight()
     #  Guardamos el largo y alto de la ventana
-    wventana = 400
+    wventana = 370
     hventana = 200
 
     #  Aplicamos la siguiente formula para calcular donde debería posicionarse
@@ -106,6 +108,9 @@ def open_config():
     #  Se lo aplicamos a la geometría de la ventana
     config_window.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
     ############################
+    
+    label = tk.Label(config_window, text="Configuracion ", font=("Arial", 15),fg="#2E6EA6",bg="#F2F2F2")
+    label.pack( pady=0)
 
     # Create a grid layout with 3 rows and 3 columns
     for i in range(3):
@@ -119,8 +124,11 @@ def open_config():
             combos_camera_config[-1].pack(side=tk.LEFT, padx=5, pady=10)
 
     # Add a button for saving the configurationxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    save_button = tk.Button(config_window, text="Guardar", command=save_config)
-    save_button.pack(side=tk.BOTTOM, padx=5, pady=10)
+    cancelar_button = tk.Button(config_window, text="Cancelar", command=config_window.destroy,bg="#2E6EA6", fg="black", font=("Arial", 10))
+    cancelar_button.pack(side=tk.LEFT, padx=100, pady=0)
+    save_button = tk.Button(config_window, text="Guardar", command=save_config,bg="#2E6EA6", fg="black", font=("Arial", 10))
+    save_button.pack(side=tk.LEFT, padx=0, pady=0)
+    
 
 def update_cameras(index, button_text,label):
     """Actualiza los frames de video con las nuevas cámaras."""
@@ -191,9 +199,15 @@ def main():
     #root.overrideredirect(True)
     #root.resizable(False,False)
     root.minsize(1000, 600)
-    bg_photo=PhotoImage(file='icono.png')
+    bg_photo=PhotoImage(file='xd.png')
+   
     root.geometry('1000x600')
     root.title("Webcam viewer")
+    icono_chico = tk.PhotoImage(file="16.png")
+    icono_grande = tk.PhotoImage(file="32.png")
+    root.iconphoto(False, icono_grande, icono_chico)
+
+    root.iconphoto(True, icono_chico)
     wtotal = root.winfo_screenwidth()
     htotal = root.winfo_screenheight()
     wventana = 1000
@@ -232,8 +246,8 @@ def main():
     frame.pack(padx=20, pady=20)
 
     # Agregar un label al frame
-    label = tk.Label(frame, text="Nivel "+ str(nivel_actual+1), font=("Arial", 24),bg="#FFFFFF")
-    label.pack()
+    label = tk.Label(frame, text="Nivel "+ str(nivel_actual+1), font=("Arial", 24),fg="#2E6EA6",bg="#FFFFFF")
+    label.pack( pady=0)
 
     # Definir acciones para cada botón
     button_actions = [lambda index=i, text=f"Nivel {i+1}": update_cameras(index, text, label) for i in range(3)]
@@ -241,33 +255,33 @@ def main():
     # Agregar botones al frame
     buttons_frame = tk.Frame(root)
     buttons_frame.configure(background="#ffffff")
-    buttons_frame.pack(side=tk.TOP, pady=20)
+    buttons_frame.pack(side=tk.TOP, pady=0)
 
-    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=report, bg="#969696", fg="black", font=("Arial", 14))
+    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=report, bg="#2E6EA6", fg="black", font=("Arial", 14))
     button_reports.pack(side=tk.LEFT, padx=20)
 
     button_reports2 = tk.Label(buttons_frame ,text="         ",bg="#ffffff", font=("Helvetica", 24))
     button_reports2.pack(side=tk.LEFT, padx=0)
 
     for i, action in enumerate(button_actions):
-        button = tk.Button(buttons_frame, text=f"Nivel {i+1}", command=action, bg="#969696", fg="black", font=("Arial", 14))
+        button = tk.Button(buttons_frame, text=f"Nivel {i+1}", command=action, bg="#2E6EA6", fg="black", font=("Arial", 14))
         button.pack(side=tk.LEFT, padx=20)
 
     # Crear botones adicionales
 
 
 
-    button_config = tk.Button(buttons_frame, text="Configuración", command=open_config, bg="#969696", fg="black", font=("Helvetica", 14))
+    button_config = tk.Button(buttons_frame, text="Configuración", command=open_config, bg="#2E6EA6", fg="black", font=("Helvetica", 14))
     button_config.pack(side=tk.RIGHT, padx=20)
     button_reports2 = tk.Label(buttons_frame ,text="          ",bg="#ffffff", font=("Helvetica", 24))
     button_reports2.pack(side=tk.RIGHT, padx=20)
 
     # Crear frames internos para los videos
     camera_frame1 = tk.Canvas(frame, width=300, height=300, bg="white")
-    camera_frame1.pack(side=tk.LEFT, padx=(0, 10))
+    camera_frame1.pack(side=tk.LEFT, padx=(0, 10), pady=13)
 
     camera_frame2 = tk.Canvas(frame, width=300, height=300, bg="white")
-    camera_frame2.pack(side=tk.LEFT, padx=(10, 0))
+    camera_frame2.pack(side=tk.LEFT, padx=(10, 0), pady=13)
 
     camera1 = cv2.VideoCapture(cameras_list[camerasLevel[0][0]])
     camera2 = cv2.VideoCapture(cameras_list[camerasLevel[0][1]])
