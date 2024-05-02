@@ -2,7 +2,8 @@
 # Importamos las librerías necesarias
 from pathlib import Path
 from PIL import Image as Pil_image, ImageTk as Pil_imageTk
-from tkinter import Button, Label, PhotoImage, ttk, messagebox
+import PIL.Image
+from tkinter import Button, Image, Label, PhotoImage, ttk, messagebox
 from datetime import datetime
 import tkinter as tk
 import cv2
@@ -32,11 +33,21 @@ def inicio():
     root.config(bg='white')
     root.overrideredirect(True)
     
-    imagen_fondo = tk.PhotoImage(file=resource_path('xd.png'))
+    #imagen_fondo = tk.PhotoImage(file=resource_path('xd.png'))
+    #imagen_fondo =imagen_fondo.subsample(2)
+
+    imagen_pil = PIL.Image.open("xd.png")
+
+    # Aplicar un zoom a la inversa a la imagen
+    zoom_factor = 0.8  
+    imagen_pil_zoomed = imagen_pil.resize((int(imagen_pil.width * zoom_factor), int(imagen_pil.height * zoom_factor)))
+
+    # Convertir la imagen de Pillow a un objeto PhotoImage
+    imagen_fondo = Pil_imageTk.PhotoImage(imagen_pil_zoomed)
 
     # Establecer la imagen de fondo en la ventana
     background_label = tk.Label(root, image=imagen_fondo)
-    background_label.place(x=-200, y=0, relwidth=1, relheight=1)
+    background_label.place(x=-220, y=0, relwidth=1, relheight=1)
     root.minsize(1000, 600)
     background_label.config(bg='white')
     wtotal = root.winfo_screenwidth()
@@ -64,14 +75,14 @@ def inicio():
     names_level = []
 
     for i in range(len(cameras_list)):
-            row_frame = tk.Frame(frame,bg="blue")
-            row_frame.pack(side=tk.TOP, fill=tk.BOTH)
-            level = tk.Label(row_frame, text=f"Cámara {i+1}",font=("Arial", 14),bg="yellow")
+            row_frame = tk.Frame(frame,bg="#577BB4")
+            row_frame.pack(side=tk.TOP, fill=tk.Y)
+            level = tk.Label(row_frame, text=f" {i+1}: ",font=("Arial", 14),bg="#577BB4")
             name = tk.Entry(row_frame, font=("Arial", 14))
             name.insert(0, camerasName[i])
             names_level.append(name)
-            level.pack(side=tk.LEFT, padx=10, pady=10, ipadx=50)
-            name.pack(side=tk.LEFT, padx=10, pady=10, ipadx=50)
+            level.pack(side=tk.LEFT, padx=10, pady=10, ipadx=10)
+            name.pack(side=tk.LEFT, padx=10, pady=10, ipadx=20)
 
     #TODO: Cargar los nombres de las cámaras
     #Usar metodo load_cameras_names()
@@ -133,9 +144,9 @@ def open_config():
     config_window.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
     ############################
     
-    LetterSize=12
+    LetterSize=13
     BLS=10
-    label = tk.Label(config_window, text="Configuracion ", font=("Arial", LetterSize),fg="#2E6EA6",bg="#F2F2F2")
+    label = tk.Label(config_window, text="Configuracion ", font=("Arial", LetterSize),fg="#004A8C",bg="#F2F2F2")
     label.pack( pady=0)
 
     # Create a grid layout with 3 rows and 3 columns
@@ -150,9 +161,9 @@ def open_config():
             combos_camera_config[-1].pack(side=tk.LEFT, padx=5, pady=10)
 
     # Add a button for saving the configurationxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    cancelar_button = tk.Button(config_window, text="Cancelar", command=config_window.destroy,bg="#2E6EA6", fg="black", font=("Arial", BLS))
+    cancelar_button = tk.Button(config_window, text="Cancelar", command=config_window.destroy,bg="#577BB4", fg="black", font=("Arial", BLS))
     cancelar_button.pack(side=tk.LEFT, padx=100, pady=0)
-    save_button = tk.Button(config_window, text="Guardar", command=save_config,bg="#2E6EA6", fg="black", font=("Arial", BLS))
+    save_button = tk.Button(config_window, text="Guardar", command=save_config,bg="#577BB4", fg="black", font=("Arial", BLS))
     save_button.pack(side=tk.LEFT, padx=0, pady=0)
     #config_window.attributes('-zoomed', 1)
     #config_window.attributes('-fullscreen', 1)
@@ -269,8 +280,8 @@ def main():
         
         LS1=root.winfo_width()*root.winfo_height()//25000#24
         LS2=root.winfo_width()*root.winfo_height()//42857#14
-        TS=max(24,LS1)
-        BS=max(14,LS2)
+        TS=min(60,LS1)
+        BS=min(35,LS2)
 
         label.config(font=("Arial",TS ))
         
@@ -282,7 +293,7 @@ def main():
 
         
        
-        #print(LS1,LS2)
+        #print(LS1,LS2,TS,BS)
         
     root.bind("<Configure>", on_window_config)
 
@@ -305,14 +316,14 @@ def main():
     buttons_frame.configure(background="#ffffff")
     buttons_frame.pack(side=tk.TOP, pady=0)
 
-    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=report, bg="#2E6EA6", fg="black", font=("Arial", 14))
+    button_reports = tk.Button(buttons_frame, text="Módulo de Reportes", command=report, bg="#577BB4", fg="black", font=("Arial", 14))
     button_reports.pack(side=tk.LEFT, padx=20)
 
     button_reports2 = tk.Label(buttons_frame ,text="         ",bg="#ffffff", font=("Helvetica", 24))
     button_reports2.pack(side=tk.LEFT, padx=0)
 
     for i, action in enumerate(button_actions):
-        button = tk.Button(buttons_frame, text=f"Nivel {i+1}", command=action, bg="#2E6EA6", fg="black", font=("Arial", 14))
+        button = tk.Button(buttons_frame, text=f"Nivel {i+1}", command=action, bg="#577BB4", fg="black", font=("Arial", 14))
         niveles_botones.append(button)
         button.pack(side=tk.LEFT, padx=20)
 
