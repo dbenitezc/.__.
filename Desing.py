@@ -17,14 +17,21 @@ camerasLevel = [[0, 1], [2, 3], [4, 5]]
 config_path = Path('config.txt')
 
 nivel_actual = 0
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 def inicio():
+    global combos_camera_config
     def cambio():
         root.destroy()
         main() 
     root = tk.Tk()
     root.overrideredirect(True)
     
-    imagen_fondo = tk.PhotoImage(file="xd.png")
+    imagen_fondo = tk.PhotoImage(file=resource_path('xd.png'))
 
     # Establecer la imagen de fondo en la ventana
     background_label = tk.Label(root, image=imagen_fondo)
@@ -40,12 +47,36 @@ def inicio():
     root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
     
    
-
+    combos_camera_config = []
 
 
    
-    imagen_continuar = tk.PhotoImage(file="Continue.png")
+    imagen_continuar = tk.PhotoImage(file=resource_path("Continue.png"))
     imagen_continuar = imagen_continuar.subsample(13)  # 13Submuestrea la imagen por un factor de 15
+    imagen_cerrar = tk.PhotoImage(file=resource_path("Close.png"))
+    imagen_cerrar = imagen_cerrar.subsample(17) #17
+
+    # Botón "Cerrar" con imagen
+    button_close = tk.Button(root, image=imagen_cerrar, command=root.destroy, bg="white", bd=0)
+    button_close.pack(side=tk.LEFT, anchor='ne',padx=20, pady=20)
+
+    for i in range(3):
+            row_frame = tk.Frame(root,bg="yellow")
+            #row_frame.wm_attributes('-transparentcolor',bg="yellow")
+            row_frame.pack(fill=tk.X)
+            level = tk.Label(row_frame, text=f"Nivel {i+1}",font=("Arial", 14),bg="yellow")
+            level.pack(side=tk.LEFT, padx=180, pady=10,ipadx=50,ipady=50)
+            for j in range(2):
+                combos_camera_config.append(ttk.Combobox(row_frame, values=[f"Camera {i+1}" for i in range(6)]))
+                combos_camera_config[-1].current(camerasLevel[i][j])
+                combos_camera_config[-1].pack(side=tk.LEFT, padx=5, pady=10)
+
+        # Add a button for saving the configurationxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    cancelar_button = tk.Button(root, text="Cancelar", command=root.destroy,bg="#2E6EA6", fg="black", font=("Arial", 14))
+    cancelar_button.pack(side=tk.LEFT, padx=100, pady=0)
+    save_button = tk.Button(root, text="Guardar", command=root,bg="#2E6EA6", fg="black", font=("Arial", 14))
+    save_button.pack(side=tk.LEFT, padx=0, pady=0)
+
 
     # Botón "Continuar" con imagen redimensionada
     button_continue = tk.Button(root, image=imagen_continuar, command=cambio, bg="white", bd=0)
@@ -54,12 +85,7 @@ def inicio():
     
 
 
-    imagen_cerrar = tk.PhotoImage(file="Close.png")
-    imagen_cerrar = imagen_cerrar.subsample(17) #17
-
-    # Botón "Cerrar" con imagen
-    button_close = tk.Button(root, image=imagen_cerrar, command=root.destroy, bg="white", bd=0)
-    button_close.pack(side=tk.LEFT, anchor='ne',padx=20, pady=20)
+    
     
    
     
@@ -86,9 +112,9 @@ def open_config():
         update_cameras(nivel_actual, '', tk.Label())
 
     config_window = tk.Toplevel(root)
-    config_window.title("Configuracion")
-    config_window.overrideredirect(True)
-    
+    config_window.title(" ")
+    #config_window.overrideredirect(True)
+    config_window.resizable(0,0)
     
     config_window.grab_set()
     combos_camera_config = []
@@ -109,14 +135,16 @@ def open_config():
     config_window.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
     ############################
     
-    label = tk.Label(config_window, text="Configuracion ", font=("Arial", 15),fg="#2E6EA6",bg="#F2F2F2")
+    LetterSize=12
+    BLS=10
+    label = tk.Label(config_window, text="Configuracion ", font=("Arial", LetterSize),fg="#2E6EA6",bg="#F2F2F2")
     label.pack( pady=0)
 
     # Create a grid layout with 3 rows and 3 columns
     for i in range(3):
         row_frame = tk.Frame(config_window)
         row_frame.pack(fill=tk.X)
-        level = tk.Label(row_frame, text=f"Nivel {i+1}")
+        level = tk.Label(row_frame, text=f"Nivel {i+1}",font=("Arial", BLS))
         level.pack(side=tk.LEFT, padx=5, pady=10)
         for j in range(2):
             combos_camera_config.append(ttk.Combobox(row_frame, values=[f"Camera {i+1}" for i in range(6)]))
@@ -124,10 +152,12 @@ def open_config():
             combos_camera_config[-1].pack(side=tk.LEFT, padx=5, pady=10)
 
     # Add a button for saving the configurationxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    cancelar_button = tk.Button(config_window, text="Cancelar", command=config_window.destroy,bg="#2E6EA6", fg="black", font=("Arial", 10))
+    cancelar_button = tk.Button(config_window, text="Cancelar", command=config_window.destroy,bg="#2E6EA6", fg="black", font=("Arial", BLS))
     cancelar_button.pack(side=tk.LEFT, padx=100, pady=0)
-    save_button = tk.Button(config_window, text="Guardar", command=save_config,bg="#2E6EA6", fg="black", font=("Arial", 10))
+    save_button = tk.Button(config_window, text="Guardar", command=save_config,bg="#2E6EA6", fg="black", font=("Arial", BLS))
     save_button.pack(side=tk.LEFT, padx=0, pady=0)
+    #config_window.attributes('-zoomed', 1)
+    #config_window.attributes('-fullscreen', 1)
     
 
 def update_cameras(index, button_text,label):
@@ -199,7 +229,7 @@ def main():
     #root.overrideredirect(True)
     #root.resizable(False,False)
     root.minsize(1000, 600)
-    bg_photo=PhotoImage(file='xd.png')
+    bg_photo=PhotoImage(file=resource_path('xd.png'))
    
     root.geometry('1000x600')
     root.title("Webcam viewer")
@@ -210,12 +240,12 @@ def main():
     root.iconphoto(True, icono_chico)
     wtotal = root.winfo_screenwidth()
     htotal = root.winfo_screenheight()
-    wventana = 1000
-    hventana = 600
+    wventana = 1000#1000
+    hventana = 600#600
     pwidth = round(wtotal/2-wventana/2)
     pheight = round(htotal/2-hventana/2)
     root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
-    icono = tk.PhotoImage(file="icono.png")
+    icono = tk.PhotoImage(file=resource_path("icono.png"))
     root.config(bg='white')
     #root.iconphoto(True,icono)
 
@@ -237,7 +267,25 @@ def main():
 
         print(width, video_width, button_width)
         config_button.place(x=button_width*5+20, width=button_width, height=button_height)
-        """
+       """
+        
+        LS1=root.winfo_width()*root.winfo_height()//25000#24
+        LS2=root.winfo_width()*root.winfo_height()//42857#14
+        TS=max(24,LS1)
+        BS=max(14,LS2)
+
+        label.config(font=("Arial",TS ))
+        
+        button_config.config(font=("Arial",BS ))
+        button_reports.config(font=("Arial",BS ))
+
+        for button in niveles_botones:    
+            button.config(font=("Arial",BS ))
+
+        
+       
+        #print(LS1,LS2)
+        
     root.bind("<Configure>", on_window_config)
 
     # Crear un frame principal
@@ -246,11 +294,13 @@ def main():
     frame.pack(padx=20, pady=20)
 
     # Agregar un label al frame
-    label = tk.Label(frame, text="Nivel "+ str(nivel_actual+1), font=("Arial", 24),fg="#2E6EA6",bg="#FFFFFF")
+    label = tk.Label(frame, text="Nivel "+ str(nivel_actual+1), font=("Arial",24 ),fg="#2E6EA6",bg="#FFFFFF")
     label.pack( pady=0)
 
     # Definir acciones para cada botón
+    
     button_actions = [lambda index=i, text=f"Nivel {i+1}": update_cameras(index, text, label) for i in range(3)]
+    niveles_botones=[]
 
     # Agregar botones al frame
     buttons_frame = tk.Frame(root)
@@ -265,6 +315,7 @@ def main():
 
     for i, action in enumerate(button_actions):
         button = tk.Button(buttons_frame, text=f"Nivel {i+1}", command=action, bg="#2E6EA6", fg="black", font=("Arial", 14))
+        niveles_botones.append(button)
         button.pack(side=tk.LEFT, padx=20)
 
     # Crear botones adicionales
