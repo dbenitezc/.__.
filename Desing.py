@@ -156,7 +156,7 @@ def open_config():
         level = tk.Label(row_frame, text=f"Nivel {i+1}",font=("Arial", BLS))
         level.pack(side=tk.LEFT, padx=5, pady=10)
         for j in range(2):
-            combos_camera_config.append(ttk.Combobox(row_frame, values=[f"Camera {i+1}" for i in range(6)]))
+            combos_camera_config.append(ttk.Combobox(row_frame, state="readonly", values=[f"Camera {i+1}" for i in range(6)]))
             combos_camera_config[-1].current(camerasLevel[i][j])
             combos_camera_config[-1].pack(side=tk.LEFT, padx=5, pady=10)
 
