@@ -8,15 +8,14 @@ from datetime import datetime
 import tkinter as tk
 import cv2
 import os
-import ctypes
-from screeninfo import get_monitors
 
 global cameras_list
 
 # Definimos las cámaras a utilizar
-camerasName = ["Cámara 1", "Cámara 2", "Cámara 3", "Cámara 4", "Cámara 5", "Cámara 6"]
+camerasName = ["Camara 1", "Camara 2", "Camara 3", "Camara 4", "Camara 5", "Camara 6"]
 camerasLevel = [[0, 1], [2, 3], [4, 5]]
 config_path = Path('Datos/config.txt')
+names_config_path = Path('Datos/cameras.txt')
 
 nivel_actual = 0
 def resource_path(relative_path):
@@ -26,16 +25,11 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
-
-
-
-    
-    
-    
-    
-
 def inicio():
     def cambio():
+        for i in range(len(cameras_list)):
+            camerasName[i] = names_level[i].get()
+        set_cameras_names()
         root.destroy()
         main() 
     root = tk.Tk()
@@ -88,20 +82,17 @@ def inicio():
             row_frame.pack(side=tk.TOP, fill=tk.Y)
             level = tk.Label(row_frame, text=f" {i+1}: ",font=("Arial", 14),bg="#577BB4")
             name = tk.Entry(row_frame, font=("Arial", 14))
-            name.insert(0, camerasName[i])
+            name.insert(0, camerasName[i].split('\n')[0])
             names_level.append(name)
             level.pack(side=tk.LEFT, padx=10, pady=10, ipadx=10)
             name.pack(side=tk.LEFT, padx=10, pady=10, ipadx=20)
-
-    #TODO: Cargar los nombres de las cámaras
-    #Usar metodo load_cameras_names()
 
     # Botón "Continuar" con imagen redimensionada
     button_continue = tk.Button(frame, image=imagen_continuar, command=cambio, bg="white", bd=0)
     button_continue.pack(side=tk.RIGHT, anchor='se', padx=20, pady=20)
 
     """
-    # Add a button for saving the configurationxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    # Add a button for saving the configuration
     cancelar_button = tk.Button(frame, text="Cancelar", command=root.destroy,bg="#2E6EA6", fg="black", font=("Arial", 14))
     cancelar_button.pack(side=tk.LEFT, padx=100, pady=0)
     save_button = tk.Button(frame, text="Guardar", command=root,bg="#2E6EA6", fg="black", font=("Arial", 14))
@@ -137,7 +128,6 @@ def open_config():
     config_window.grab_set()
     combos_camera_config = []
 
-    ###########################################
     #  Obtenemos el largo y  ancho de la pantalla
     wtotal = config_window.winfo_screenwidth()
     htotal = config_window.winfo_screenheight()
@@ -151,7 +141,6 @@ def open_config():
 
     #  Se lo aplicamos a la geometría de la ventana
     config_window.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
-    ############################
     
     LetterSize=13
     BLS=10
@@ -165,11 +154,11 @@ def open_config():
         level = tk.Label(row_frame, text=f"Nivel {i+1}",font=("Arial", BLS))
         level.pack(side=tk.LEFT, padx=5, pady=10)
         for j in range(2):
-            combos_camera_config.append(ttk.Combobox(row_frame, state="readonly", values=[f"Camera {i+1}" for i in range(6)]))
+            combos_camera_config.append(ttk.Combobox(row_frame, state="readonly", values=camerasName))
             combos_camera_config[-1].current(camerasLevel[i][j])
             combos_camera_config[-1].pack(side=tk.LEFT, padx=5, pady=10)
 
-    # Add a button for saving the configurationxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    # Add a button for saving the configuration
     cancelar_button = tk.Button(config_window, text="Cancelar", command=config_window.destroy,bg="#577BB4", fg="black", font=("Arial", BLS))
     cancelar_button.pack(side=tk.LEFT, padx=100, pady=0)
     save_button = tk.Button(config_window, text="Guardar", command=save_config,bg="#577BB4", fg="black", font=("Arial", BLS))
@@ -242,7 +231,6 @@ def take_pic(camera, path):
 
 def main():
     global root, camera1, camera2, camera_frame1, camera_frame2
-
     
     root = tk.Tk()
     #root.overrideredirect(True)
@@ -338,9 +326,6 @@ def main():
         button.pack(side=tk.LEFT, padx=20)
 
     # Crear botones adicionales
-
-
-
     button_config = tk.Button(buttons_frame, text="Configuración", command=open_config, bg="#2E6EA6", fg="black", font=("Helvetica", 14))
     button_config.pack(side=tk.RIGHT, padx=20)
     button_reports2 = tk.Label(buttons_frame ,text="          ",bg="#ffffff", font=("Helvetica", 24))
@@ -371,11 +356,23 @@ def list_cameras():
             cap.release()
     return cameras
 
+def set_cameras_names():
+    if not names_config_path.is_file(): return
+    with open(names_config_path, 'w') as file:
+        for i in range(6):
+            temp = camerasName[i].split('\n')[0]
+            file.write(f"{temp}")
+            file.write("\n")
+
 def load_cameras_names():
-    with open('cameras.txt', 'r') as file:
+    if not names_config_path.is_file():
+        with open(names_config_path, 'w') as file:
+            for i in range(6):
+                file.write(f"{camerasName[i]}")
+                file.write("\n")
+    with open(names_config_path, 'r') as file:
         for i in range(6):
             camerasName[i] = file.readline()
-
 
 def load_cameras_config():
     if not config_path.is_file(): return
@@ -393,4 +390,5 @@ print(cameras_list)
 if not cameras_list:
     print("No se encontraron cámaras.")
 load_cameras_config()
+load_cameras_names()
 inicio()
