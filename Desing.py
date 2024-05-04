@@ -77,6 +77,11 @@ def inicio():
     frame.pack(side=tk.RIGHT, padx=20, pady=(200,0), fill=tk.BOTH)
 
     names_level = []
+    NC=len(cameras_list)
+    Letrero_lista_camaras= tk.Frame(frame,bg="#FFFFFF")
+    Letrero_lista_camaras.pack(side=tk.TOP)
+    letrero=tk.Label(Letrero_lista_camaras,text=f"{NC} camaras encontradas",font=("Arial", 24),bg="#FFFFFF")
+    letrero.pack(side=tk.TOP)
 
     for i in range(len(cameras_list)):
             row_frame = tk.Frame(frame,bg="#577BB4")
@@ -155,7 +160,7 @@ def open_config():
         level = tk.Label(row_frame, text=f"Nivel {i+1}",font=("Arial", BLS))
         level.pack(side=tk.LEFT, padx=5, pady=10)
         for j in range(2):
-            combos_camera_config.append(ttk.Combobox(row_frame, state="readonly", values=camerasName))
+            combos_camera_config.append(ttk.Combobox(row_frame, state="readonly", values=camerasName[0:len(cameras_list)]))
             combos_camera_config[-1].current(camerasLevel[i][j])
             combos_camera_config[-1].pack(side=tk.LEFT, padx=5, pady=10)
 
@@ -350,11 +355,13 @@ def main():
 
 def list_cameras():
     devices = FilterGraph().get_input_devices()
+    print(devices)
     name = 0
     cameras = []
     for i in range(cv2.CAP_DSHOW, cv2.CAP_DSHOW + 10):
         cap = cv2.VideoCapture(i)
         if cap.isOpened():
+            print(devices[name])
             camerasName[name], name = devices[name], name + 1
             cameras.append(i)
             cap.release()
@@ -390,7 +397,12 @@ def load_cameras_config():
 
 
 cameras_list = list_cameras()
-print(cameras_list)
+maxCameras = 0
+for i in range(3):
+    camerasLevel[i][0] = maxCameras % len(cameras_list)
+    camerasLevel[i][1] = (maxCameras + 1) % len(cameras_list)
+    maxCameras += 2
+
 if not cameras_list:
     print("No se encontraron cámaras.")
 load_cameras_config()
