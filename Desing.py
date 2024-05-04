@@ -16,7 +16,7 @@ global cameras_list
 # Definimos las cámaras a utilizar
 camerasName = ["Cámara 1", "Cámara 2", "Cámara 3", "Cámara 4", "Cámara 5", "Cámara 6"]
 camerasLevel = [[0, 1], [2, 3], [4, 5]]
-config_path = Path('config.txt')
+config_path = Path('Datos/config.txt')
 
 nivel_actual = 0
 def resource_path(relative_path):
@@ -25,6 +25,15 @@ def resource_path(relative_path):
     except Exception:
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
+
+
+
+
+    
+    
+    
+    
+
 def inicio():
     def cambio():
         root.destroy()
@@ -36,7 +45,7 @@ def inicio():
     #imagen_fondo = tk.PhotoImage(file=resource_path('xd.png'))
     #imagen_fondo =imagen_fondo.subsample(2)
 
-    imagen_pil = PIL.Image.open("xd.png")
+    imagen_pil = PIL.Image.open("Datos/bg.png")
 
     # Aplicar un zoom a la inversa a la imagen
     zoom_factor = 0.8  
@@ -58,9 +67,9 @@ def inicio():
     pheight = round(htotal/2-hventana/2)
     root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
 
-    imagen_continuar = tk.PhotoImage(file=resource_path("Continue.png"))
+    imagen_continuar = tk.PhotoImage(file=resource_path("Datos/Continue.png"))
     imagen_continuar = imagen_continuar.subsample(13)  # 13Submuestrea la imagen por un factor de 15
-    imagen_cerrar = tk.PhotoImage(file=resource_path("Close.png"))
+    imagen_cerrar = tk.PhotoImage(file=resource_path("Datos/Close.png"))
     imagen_cerrar = imagen_cerrar.subsample(17) #17
 
     # Botón "Cerrar" con imagen
@@ -105,7 +114,7 @@ def inicio():
 def open_config():
     def save_config():
         # Logic to save the selected camera configuration
-        print("Configuration Guardada")
+        print("Configuracion Guardada")
         for i in range(3):
             if(combos_camera_config[i*2].current()==combos_camera_config[i*2+1].current()):
                 print("Error: Las cámaras no pueden ser iguales")
@@ -215,7 +224,8 @@ def report():
     print("Presionaste el boton de reportes")
     videoCams = [camera1, camera2]
     folderName = datetime.now().strftime("%d-%m-%Y %H.%M")
-    folderPath = Path(f"{folderName} Nivel {nivel_actual+1}")
+    reportFolder = "Reporte webcams"
+    folderPath = Path(f"{reportFolder}/{folderName} Nivel {nivel_actual+1}")
     if not os.path.exists(folderPath):
         os.makedirs(folderPath)
     for i in range(2):
@@ -238,13 +248,13 @@ def main():
     #root.overrideredirect(True)
     #root.resizable(False,False)
     root.minsize(1000, 600)
-    bg_photo=PhotoImage(file=resource_path('xd.png'))
+    bg_photo=PhotoImage(file=resource_path('Datos/bg.png'))
    
     root.geometry('1000x600')
     root.title("Webcam viewer")
-    icono_chico = tk.PhotoImage(file="16.png")
-    icono_grande = tk.PhotoImage(file="32.png")
-    root.iconphoto(False, icono_grande, icono_chico)
+    icono_chico = tk.PhotoImage(file="Datos/16.png")
+    icono_grande = tk.PhotoImage(file="Datos/32.png")
+    root.iconphoto(False, icono_grande, icono_chico)    
 
     root.iconphoto(True, icono_chico)
     wtotal = root.winfo_screenwidth()
@@ -254,7 +264,7 @@ def main():
     pwidth = round(wtotal/2-wventana/2)
     pheight = round(htotal/2-hventana/2)
     root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
-    icono = tk.PhotoImage(file=resource_path("icono.png"))
+    icono = tk.PhotoImage(file=resource_path("Datos/icono.png"))
     root.config(bg='white')
     #root.iconphoto(True,icono)
 
