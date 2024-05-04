@@ -5,6 +5,7 @@ from PIL import Image as Pil_image, ImageTk as Pil_imageTk
 import PIL.Image
 from tkinter import Button, Image, Label, PhotoImage, ttk, messagebox
 from datetime import datetime
+from pygrabber.dshow_graph import FilterGraph
 import tkinter as tk
 import cv2
 import os
@@ -348,10 +349,13 @@ def main():
 
 
 def list_cameras():
+    devices = FilterGraph().get_input_devices()
+    name = 0
     cameras = []
     for i in range(cv2.CAP_DSHOW, cv2.CAP_DSHOW + 10):
         cap = cv2.VideoCapture(i)
         if cap.isOpened():
+            camerasName[name], name = devices[name], name + 1
             cameras.append(i)
             cap.release()
     return cameras
