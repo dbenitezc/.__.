@@ -74,7 +74,7 @@ def inicio():
     # Crear un frame principal
     frame = tk.Frame(root)
     frame.configure(background="white")
-    frame.pack(side=tk.RIGHT, padx=20, pady=(200,0), fill=tk.BOTH)
+    frame.pack(side=tk.RIGHT, padx=20, pady=(130,0), fill=tk.BOTH)
 
     names_level = []
     NC=len(cameras_list)
