@@ -9,6 +9,7 @@ from pygrabber.dshow_graph import FilterGraph
 import tkinter as tk
 import cv2
 import os
+import random 
 
 global cameras_list
 
@@ -97,6 +98,42 @@ def inicio():
     button_continue = tk.Button(frame, image=imagen_continuar, command=cambio, bg="white", bd=0)
     button_continue.pack(side=tk.RIGHT, anchor='se', padx=20, pady=20)
 
+    button_reports2 = tk.Label(frame ,text="        ",bg="#ffffff", font=("Helvetica", 24))
+    button_reports2.pack(side=tk.RIGHT, padx=0)
+   
+
+    default_index = [0]
+    default_texts = ["Nombre por defecto 1", "Nombre por defecto 2"]
+
+    ordenar_button = tk.Button(frame, text=default_texts[default_index[0]], font=("Arial", 12), bg="#577BB4",command=lambda: toggle_names_level(default_index))
+    ordenar_button.pack(side=tk.BOTTOM, padx=20, pady=25)
+
+    def toggle_names_level(default_index):
+        if default_index[0] == 0:
+            ordenar_button.config(text=default_texts[1])
+            default_index[0] = 1
+            print(default_index[0])
+            for i, name in enumerate(names_level):
+                name.delete(0, tk.END)
+                name.insert(0, str(i + 1))
+        else:
+            ordenar_button.config(text=default_texts[0])
+            default_index[0] = 0
+            words = ["1 Izquierda", "3 Derecha", "2 Derecha", "3 Izquierda", "1 Derecha", "2 Izquierda"]
+            for i, name in enumerate(names_level):
+                name.delete(0, tk.END)
+                name.insert(0, words[i % len(words)])
+
+    def delete_files():
+        if os.path.exists(names_config_path):
+            os.remove(names_config_path)
+        if os.path.exists(config_path):
+            os.remove(config_path)
+        messagebox.showinfo("Files deleted", "Camera and config files have been deleted.")
+
+    delete_button = tk.Button(root, text="Reiniciar", font=("Arial", 12), bg="#577BB4", command=delete_files)
+    delete_button.pack(side=tk.LEFT, anchor='s',padx=0,pady=25)
+    
     """
     # Add a button for saving the configuration
     cancelar_button = tk.Button(frame, text="Cancelar", command=root.destroy,bg="#2E6EA6", fg="black", font=("Arial", 14))
